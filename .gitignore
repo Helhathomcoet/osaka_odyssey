@@ -1,0 +1,64 @@
+# Fichiers de logs
+*.log
+
+# Fichiers de système
+.DS_Store
+*.swp
+*.lock
+profile
+
+# Dossiers spécifiques à l'IDE et outils de développement
+.idea/
+.vscode/
+.history/
+tmp/
+temp/
+
+# Fichiers spécifiques à Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+
+# Fichiers générés par Flutter
+build/
+flutter_*.png
+flutter_export_environment.sh
+
+# Fichiers de packages
+**/ios/.symlinks/
+**/ios/Flutter/.last_build_id
+**/android/.gradle
+**/android/.idea
+.gradle/
+**/android/app/debug.keystore
+**/android/app/google-services.json
+
+# Fichiers spécifiques à l'OS
+**/.DS_Store
+
+# Fichiers de configuration spécifiques au projet
+**/android/key.properties
+
+# Fichiers de cache et temporaires
+**/lib/generated_plugin_registrant.dart
+
+# Fichiers de performance de Flutter
+**/dev/benchmarks/macrobenchmarks/build/
+**/dev/integration_tests/flutter_gallery/build/
+
+# Fichiers et dossiers générés par l'IDE
+**/*.iml
+**/*.ipr
+**/*.iws
+.idea/
+
+# Fichiers de couverture de code
+coverage/
+
+# Fichiers JKS pour la signature d'applications Android
+*.jks
+*.keystore
+
+# Fichiers de secrets (ne les suivez jamais !)
+.secret
