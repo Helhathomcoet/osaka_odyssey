@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:web_scraper/web_scraper.dart';
+import 'package:flutter/services.dart';
+import 'package:osaka_odyssey/ChapterService/ChapterService.dart';
+import 'package:osaka_odyssey/ChaptersList.dart'; // Assure-toi que le chemin est correct
+import 'dart:io';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:osaka_odyssey/Models/Chapter.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Manga Scrapper',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -33,25 +40,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _items = [];
+  Future<List<Chapter>>?
+      _searchFuture; 
 
-  Future<void> fetchMangaImages() async {
-    final webScraper = WebScraper('https://lelscans.net');
-    if (await webScraper.loadWebPage('/scan-one-piece/1111/2')) {
-      List<Map<String, dynamic>> elements =
-          webScraper.getElement('div#image img', ['src']);
-      if (elements.isNotEmpty) {
-        // Construit l'URL complet
-        String imageUrl =
-            'https://lelscans.net' + elements.first['attributes']['src'];
-        print(imageUrl);
-        // Ici, tu pourrais par exemple utiliser imageUrl pour l'afficher dans ton application
-      }
-    }
-  }
-
-  void _addItem() {
-    fetchMangaImages();
+  void _search() {
+    setState(() {
+      _searchFuture = ChapterService().fetchChapters(_controller.text);
+    });
   }
 
   @override
@@ -68,24 +63,20 @@ class _MyHomePageState extends State<MyHomePage> {
             child: TextField(
               controller: _controller,
               decoration: InputDecoration(
-                labelText: 'Ajouter un élément',
+                labelText: 'Rechercher un manga',
                 suffixIcon: IconButton(
-                  onPressed: _addItem,
-                  icon: const Icon(Icons.add),
+                  onPressed: _search, // Lancer la recherche
+                  icon: const Icon(Icons.search),
                 ),
               ),
-              onSubmitted: (value) => _addItem(),
+              onSubmitted: (value) => _search(),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _items.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_items[index]),
-                );
-              },
-            ),
+            // Utilisez un FutureBuilder pour construire l'UI basée sur le résultat de la recherche
+            child: _searchFuture == null
+                ? Center(child: Text("Entrez une recherche pour commencer."))
+                : ChaptersList(searchQuery: _controller.text),
           ),
         ],
       ),
